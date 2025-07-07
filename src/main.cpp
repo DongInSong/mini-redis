@@ -1,7 +1,19 @@
+#include "network/server.hpp"
 #include <iostream>
 
-int main() {
-    std::cout << "Mini-Redis Server starting..." << std::endl;
-    // 여기에 서버 초기화 및 실행 로직 추가
+int main()
+{
+    try
+    {
+        // Create and run the server on port 6379
+        mini_redis::server s(6379);
+        std::cout << "Mini-Redis server started on port 6379" << std::endl;
+        s.run();
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << "Exception: " << e.what() << std::endl;
+    }
+
     return 0;
 }
