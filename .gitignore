@@ -5,6 +5,7 @@ build/
 *.dll
 *.exe
 
+.vscode/
 .idea/
 
 *.log
