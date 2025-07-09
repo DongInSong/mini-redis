@@ -57,11 +57,11 @@ C++와 Boost.Asio를 사용하여 Redis의 핵심 기능(GET, SET, PUB/SUB, TTL 
 
 ### Milestone 1: TCP 서버 및 PING 명령어
 
--   [✅] **비동기 TCP 서버 구축**: Boost.Asio를 사용하여 여러 클라이언트의 동시 접속을 처리할 수 있는 비동기 TCP 서버의 기본 구조를 완성했습니다.
--   [✅] **TCP 클라이언트 구현**: 서버에 접속하여 명령어를 전송하고 응답을 받을 수 있는 간단한 동기 방식의 클라이언트를 구현했습니다.
--   [✅] **RESP 파서**: Redis 명령어 형식인 RESP의 배열 타입(*)을 해석할 수 있는 파서를 구현했습니다.
--   [✅] **커맨드 핸들러**: 파싱된 명령어를 받아 처리하는 핸들러 구조를 만들었습니다.
--   [✅] **`PING` 명령어 구현**: `PING`을 구현하여 서버와 클라이언트 간의 기본적인 통신 및 명령어 처리 흐름을 완성했습니다.
+-   [x] **비동기 TCP 서버 구축**: Boost.Asio를 사용하여 여러 클라이언트의 동시 접속을 처리할 수 있는 비동기 TCP 서버의 기본 구조를 완성했습니다.
+-   [x] **TCP 클라이언트 구현**: 서버에 접속하여 명령어를 전송하고 응답을 받을 수 있는 간단한 동기 방식의 클라이언트를 구현했습니다.
+-   [x] **RESP 파서**: Redis 명령어 형식인 RESP의 배열 타입(*)을 해석할 수 있는 파서를 구현했습니다.
+-   [x] **커맨드 핸들러**: 파싱된 명령어를 받아 처리하는 핸들러 구조를 만들었습니다.
+-   [x] **`PING` 명령어 구현**: `PING`을 구현하여 서버와 클라이언트 간의 기본적인 통신 및 명령어 처리 흐름을 완성했습니다.
 
 ### Milestone 2: 기본 데이터 조작
 
@@ -72,4 +72,4 @@ C++와 Boost.Asio를 사용하여 Redis의 핵심 기능(GET, SET, PUB/SUB, TTL 
 -   [ ] **TTL(Time To Live) 구현**
 
 ### Milestone 3: Rss-Redis 프로젝트 적용
--   [ ] rss-redis [![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/DongInSong/rss-redis) 에 적용 및 기존 Redis 성능 비교
+-   [ ] [![GitHub](https://img.shields.io/badge/rss_redis-181717?style=flat&logo=github&logoColor=white)](https://github.com/DongInSong/rss-redis) 적용 및 기존 Redis 성능 비교
