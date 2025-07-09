@@ -2,11 +2,11 @@
 
 C++와 Boost.Asio를 사용하여 Redis의 핵심 기능(GET, SET, PUB/SUB, TTL 등)을 구현하는 학습용 프로젝트입니다.
 
-## 기술 스택
+## 1. 기술 스택
 
 ![C++](https://img.shields.io/badge/C++-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white)  ![Boost](https://img.shields.io/badge/Boost-00599C?style=for-the-badge&logoColor=white)
 
-## 빌드 및 실행 방법
+## 2. 빌드 및 실행 방법
 
 ### 요구사항
 
@@ -56,7 +56,7 @@ C++와 Boost.Asio를 사용하여 Redis의 핵심 기능(GET, SET, PUB/SUB, TTL 
     ./Debug/client.exe
     ```
 
-## 진행 상황 
+## 3. 진행 상황 
 
 ### Milestone 1: TCP 서버 및 PING 명령어
 
