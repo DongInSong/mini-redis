@@ -20,7 +20,14 @@ A learning-oriented project that implements core Redis features (GET, SET, PUB/S
 
 1. **Install Boost via vcpkg**
     ```bash
+    # Windows
     vcpkg install boost:x64-windows
+    
+    # Linux
+    ./vcpkg install boost
+    
+    # macOS
+    xcode-select --install
     ```
 
 2. **Clone the repository and create a build directory**
@@ -37,7 +44,14 @@ A learning-oriented project that implements core Redis features (GET, SET, PUB/S
     ```
     Or specify a build tool and the `vcpkg.cmake` toolchain file:
     ```bash
+    # Windows
     cmake .. -G "Visual Studio 17 2022" -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake
+
+    # Linux
+    cmake .. -DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake
+
+    # macOS
+    cmake .. -DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake
     ```
 
 4. **Build the project**
