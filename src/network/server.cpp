@@ -38,6 +38,7 @@ namespace mini_redis
                                      boost::asio::buffers_begin(read_buffer_.data()) + bytes_transferred);
                     read_buffer_.consume(bytes_transferred);
 
+                    // resp 명령어 파싱 및 실행
                     auto commands = parser_.parse(data);
                     for (const auto& cmd : commands) {
                         std::string result = handler_.execute_command(cmd);
