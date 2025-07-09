@@ -24,6 +24,7 @@ target_link_libraries(mini-redis_server PRIVATE Boost::asio)
 # 테스트용 클라이언트 빌드
 add_executable(client client/client.cpp)
 target_include_directories(client PUBLIC include)
+target_link_libraries(client PRIVATE Boost::asio)
 
 # 테스트 코드 빌드 (gtest 같은 프레임워크 추가 필요)
 # enable_testing()

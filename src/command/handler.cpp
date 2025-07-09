@@ -1,68 +1,69 @@
 #include "command/handler.hpp"
-#include <stdexcept>
+#include <algorithm> // for std::transform
+#include <cctype>   // for ::toupper
 
 namespace mini_redis
 {
-  command_handler::command_handler(std::shared_ptr<store> store) : store_(store)
-  {
-    // Constructor implementation
-  }
+  command_handler::command_handler(std::shared_ptr<store> store) : store_(store) {}
 
   std::string command_handler::execute_command(const command_t &cmd)
   {
-    // TODO: Implement command dispatching
-    // 1. Validate the command size.
-    // 2. Convert the command name to lowercase for case-insensitive matching.
-    // 3. Dispatch to the appropriate handler (handle_get, handle_set, etc.).
-    // 4. Return an error message for unknown commands.
-
     if (cmd.empty())
     {
-      return "-ERR wrong number of arguments\r\n";
+      return "-ERR wrong number of arguments for 'empty' command\r\n";
     }
 
-    const auto &command_name = cmd[0];
-    if (command_name == "GET" || command_name == "get")
+    std::string command_name = cmd[0];
+    std::transform(command_name.begin(), command_name.end(), command_name.begin(), ::toupper);
+
+    if (command_name == "PING")
+    {
+      return handle_ping(cmd);
+    }
+    else if (command_name == "GET")
     {
       return handle_get(cmd);
     }
-    else if (command_name == "SET" || command_name == "set")
+    else if (command_name == "SET")
     {
       return handle_set(cmd);
     }
-    else if (command_name == "DEL" || command_name == "del")
+    // TODO: Add other commands like DEL, etc.
+    else
     {
-      return handle_del(cmd);
+      return "-ERR unknown command `" + cmd[0] + "`\r\n";
     }
+  }
 
-    return "-ERR unknown command\r\n";
+  std::string command_handler::handle_ping(const command_t &cmd)
+  {
+    if (cmd.size() > 2)
+    {
+      return "-ERR wrong number of arguments for 'ping' command\r\n";
+    }
+    if (cmd.size() == 2)
+    {
+      return "$" + std::to_string(cmd[1].length()) + "\r\n" + cmd[1] + "\r\n";
+    }
+    return "+PONG\r\n";
   }
 
   std::string command_handler::handle_get(const command_t &cmd)
   {
-    // TODO: Implement GET command logic
-    // 1. Check for the correct number of arguments.
-    // 2. Call store_->get().
-    // 3. Format the result as a RESP bulk string or nil.
-    return "$-1\r\n"; // Dummy nil response
+    // TODO: Implement GET logic
+    return "-ERR Unimplemented command: GET\r\n";
   }
 
   std::string command_handler::handle_set(const command_t &cmd)
   {
-    // TODO: Implement SET command logic
-    // 1. Check for the correct number of arguments.
-    // 2. Call store_->set().
-    // 3. Return "+OK\r\n".
-    return "+OK\r\n"; // Dummy OK response
+    // TODO: Implement SET logic
+    return "-ERR Unimplemented command: SET\r\n";
   }
 
   std::string command_handler::handle_del(const command_t &cmd)
   {
-    // TODO: Implement DEL command logic
-    // 1. Check for the correct number of arguments.
-    // 2. Call store_->del().
-    // 3. Return the number of deleted keys as a RESP integer.
-    return ":0\r\n"; // Dummy response
+      // TODO: Implement DEL logic
+      return "-ERR Unimplemented command: DEL\r\n";
   }
 
 } // namespace mini_redis

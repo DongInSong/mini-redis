@@ -30,6 +30,7 @@ namespace mini_redis
     std::shared_ptr<store> store_;
 
     // Command-specific handler functions
+    std::string handle_ping(const command_t &cmd);
     std::string handle_get(const command_t &cmd);
     std::string handle_set(const command_t &cmd);
     std::string handle_del(const command_t &cmd);
