@@ -30,12 +30,15 @@ C++와 Boost.Asio를 사용하여 Redis의 핵심 기능(GET, SET, PUB/SUB, TTL 
     ```
 
 3.  **빌드 파일 생성**
-    `vcpkg.cmake` 툴체인 파일의 경로 지정 필요!
+    ```bash
+    cmake ..
+    ```
+    or 빌드 툴 및 `vcpkg.cmake` 툴체인 파일 경로 지정
     ```bash
     cmake .. -G "Visual Studio 17 2022" -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake
     ```
 
-4.  **프로젝트 빌드**
+5.  **프로젝트 빌드**
     ```bash
     cmake --build .
     ```
