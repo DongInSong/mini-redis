@@ -72,15 +72,25 @@ namespace mini_redis
 
   void server::run()
   {
-    std::cout << "Server starting on port " << acceptor_.local_endpoint().port() << "..." << std::endl;
     // CPU 코어 수만큼 스레드 풀 생성
     const auto thread_count = std::max<int>(1, std::thread::hardware_concurrency());
     for (int i = 0; i < thread_count; ++i) {
-      thread_pool_.emplace_back([this] { io_context_.run(); });
+      thread_pool_.emplace_back([this] {
+        try {
+        io_context_.run();
+        } catch (const std::exception &e) {
+          std::cerr << "Thread exception: " << e.what() << std::endl;
+        }
+      });  
     }
-    // 메인 스레드 I/O 작업 참여
-    io_context_.run();
+    // 메인 스레드 - 스레드 최소 2개
+    try {
+      io_context_.run();
+    } catch (const std::exception &e) {
+      std::cerr << "Main thread exception: " << e.what() << std::endl;
+    }
   }
+
 
   void server::stop()
   {
