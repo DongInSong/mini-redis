@@ -9,7 +9,34 @@ A learning-oriented project that implements core Redis features (GET, SET, DEL, 
 
 ![C++](https://img.shields.io/badge/C++-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white)  ![Boost](https://img.shields.io/badge/Boost-00599C?style=for-the-badge&logoColor=white)
 
-## 3. Build & Execution
+
+## 3. Project Progress  ![progress](https://img.shields.io/badge/Progress-70%25-yellowgreen)
+
+### Milestone 1: TCP Server and PING Command
+
+-   [x] **Asynchronous TCP Server**: Built a basic asynchronous TCP server using Boost.Asio to support multiple simultaneous client connections.
+-   [x] **TCP Client Implementation**: Created a simple synchronous client to connect, send commands, and receive responses from the server.
+-   [x] **RESP Parser**: Implemented a parser to decode RESP (REdis Serialization Protocol) array format commands.
+-   [x] **Command Handler**: Developed a command handler structure to process parsed commands.
+-   [x] **`PING` Command**: Implemented the `PING` command to validate the communication and command flow between the client and server.
+
+### Milestone 2: Basic Data Operations
+
+-   [x] **`SET` Command**: Implement storing a value for a specified key.
+-   [x] **`GET` Command**: Implement retrieving the value of a specified key.
+-   [x] **`DEL` Command**: Implement key deletion. Returns the number of keys that were removed.
+-   [x] **`KEYS` Command**: Implement key searching with glob-style patterns (e.g., `KEYS *`, `KEYS user:*`).
+-   [x] **In-memory Data Store**: Implement an internal store to manage key-value data.
+
+### Milestone 3: Advanced Features
+-   [ ] **`PUB/SUB` Commands**: Implement publish/subscribe messaging functionality.
+-   [ ] **TTL (Time To Live)**: Implement expiration for keys.
+
+### Milestone 4: Integration with RSS-Redis Project
+-   [ ] Apply to [![GitHub](https://img.shields.io/badge/rss_redis-181717?style=flat&logo=github&logoColor=white)](https://github.com/DongInSong/rss-redis) and compare performance with existing Redis.
+
+
+## 4. Build & Execution
 
 ### Requirements
 - A C++17-compatible compiler (MSVC, GCC, Clang, etc.)
@@ -72,26 +99,3 @@ A learning-oriented project that implements core Redis features (GET, SET, DEL, 
     ```bash
     ./Debug/client.exe
     ```
-
-## Project Progress  ![progress](https://img.shields.io/badge/Progress-70%25-yellowgreen)
-
-### Milestone 1: TCP Server and PING Command
-
--   [x] **Asynchronous TCP Server**: Built a basic asynchronous TCP server using Boost.Asio to support multiple simultaneous client connections.
--   [x] **TCP Client Implementation**: Created a simple synchronous client to connect, send commands, and receive responses from the server.
--   [x] **RESP Parser**: Implemented a parser to decode RESP (REdis Serialization Protocol) array format commands.
--   [x] **Command Handler**: Developed a command handler structure to process parsed commands.
--   [x] **`PING` Command**: Implemented the `PING` command to validate the communication and command flow between the client and server.
-
-### Milestone 2: Basic Data Operations
-
--   [x] **`SET` Command**: Add support for storing values by key.
--   [x] **`GET` Command**: Add support for retrieving stored values using keys.
--   [x] **`DEL` Command**: Implement key deletion. Returns the number of keys that were removed.
--   [x] **`KEYS` Command**: Implement key searching with glob-style patterns (e.g., `KEYS *`, `KEYS user:*`).
--   [x] **In-memory Data Store**: Implement an internal store to manage key-value data.
--   [ ] **`PUB/SUB` Commands**: Implement publish/subscribe messaging functionality.
--   [ ] **TTL (Time To Live)**: Implement expiration for keys.
-
-### Milestone 3: Integration with RSS-Redis Project
--   [ ] Apply to [![GitHub](https://img.shields.io/badge/rss_redis-181717?style=flat&logo=github&logoColor=white)](https://github.com/DongInSong/rss-redis) and compare performance with existing Redis.
