@@ -26,11 +26,6 @@ add_executable(client client/client.cpp)
 target_include_directories(client PUBLIC include)
 target_link_libraries(client PRIVATE Boost::asio)
 
-add_executable(test_client client/test_client.cpp)
-target_include_directories(test_client PUBLIC include)
-target_link_libraries(test_client PRIVATE Boost::asio)
-
-
 # 테스트 코드 추가
 enable_testing()
 
