@@ -86,8 +86,8 @@ namespace mini_redis
         // 여기서는 간단하게 버퍼를 비우고 오류를 출력합니다.
         std::cerr << "Parsing error: " << e.what() << std::endl;
         buffer_.erase(0, pos); // 오류가 발생한 부분까지 버퍼를 비웁니다.
-        pos = start_pos; // 위치를 리셋합니다.
-        break; // 루프를 중단하고 다음 데이터 수신을 기다립니다.
+        pos = start_pos; // 위치 리셋
+        break; 
       }
     }
 
@@ -99,15 +99,49 @@ namespace mini_redis
     return commands;
   }
 
-  // RESP 형식으로 직렬화
-  // 에러 메시지와 정수 값을 RESP 형식으로 직렬화합니다.
-  // 에러 메시지는 -로 시작하고, 정수는 :로 시작합니다.
-  // 각 메시지는 \r\n으로 끝납니다.
-  std::string parser::serialize_error(const std::string &message)
+  // RESP 형식 직렬화
+  // 예시: +OK\r\n, $3\r\nSET\r\n, *3\r\n$3\r\nSET\r\n$3\r\nkey\r\n$5\r\nhello\r\n
+
+  std::string parser::serialize_ok()
   {
-    return "-" + message + "\r\n";
+    return "+OK\r\n";
   }
 
+  std::string parser::serialize_error(const std::string &values)
+  {
+    return "-" + values + "\r\n";
+  }
+
+  std::string parser::serizlize_null_bulk_string()
+  {
+    return "$-1\r\n"; // null bulk string
+  }
+
+  // Bulk string은 $로 시작하며, 길이와 문자열을 포함합니다.
+  std::string parser::serialize_bulk_string(const std::optional<std::string> &value)
+  {
+    if (value.has_value())
+    {
+      return "$" + std::to_string(value->size()) + "\r\n" + *value + "\r\n";
+    }
+    else
+    {
+      return "$-1\r\n"; // null bulk string
+    }
+  }
+
+  // Array는 *로 시작하며, 배열의 크기와 각 요소를 포함합니다.
+  std::string parser::serialize_array(const std::vector<std::string> &values)
+  {
+    std::string result = "*" + std::to_string(values.size()) + "\r\n";
+    for (const auto &v : values)
+    {
+      result += "$" + std::to_string(v.length()) + "\r\n" + v + "\r\n";
+    }
+    return result;
+  }
+
+  // Integer는 :로 시작하며, 정수 값을 포함합니다.
   std::string parser::serialize_integer(int value)
   {
     return ":" + std::to_string(value) + "\r\n";

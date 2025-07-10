@@ -11,6 +11,8 @@ TEST_F(StoreTest, SetAndGet) {
     auto val = store_instance.get("key1");
     ASSERT_TRUE(val.has_value());
     EXPECT_EQ(val.value(), "value1");
+    auto val2 = store_instance.get("key2");
+    EXPECT_EQ(val2, std::nullopt);
 }
 
 TEST_F(StoreTest, GetNonExistent) {
