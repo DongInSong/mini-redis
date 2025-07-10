@@ -34,7 +34,7 @@ namespace mini_redis
                 if (!ec) {
                     read_buffer_.commit(bytes_transferred);
                     // streambuf -> string 데이터 변환
-                    std::string data(boost::asio::buffers_begin(read_buffer_.data()), 
+                    std::string data(boost::asio::buffers_begin(read_buffer_.data()),
                                      boost::asio::buffers_begin(read_buffer_.data()) + bytes_transferred);
                     read_buffer_.consume(bytes_transferred);
 
@@ -42,6 +42,8 @@ namespace mini_redis
                     auto commands = parser_.parse(data);
                     for (const auto& cmd : commands) {
                         std::string result = handler_.execute_command(cmd);
+                        std::cout << "Command executed: " << cmd[0] << std::endl;
+                        std::cout << "Response: " << result << std::endl;
                         do_write(result);
                     }
                     // 읽기
@@ -65,7 +67,8 @@ namespace mini_redis
   };
 
   server::server(short port)
-      : acceptor_(io_context_, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port))
+      : acceptor_(io_context_, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port)),
+        store_(std::make_shared<store>())
   {
     // 생성자 연결
     start_accept();
@@ -120,8 +123,7 @@ namespace mini_redis
     if (!error)
     {
       // 데이터 저장소를 생성하고 세션에 전달
-      auto s = std::make_shared<store>();
-      std::make_shared<session>(std::move(socket), s)->start();
+      std::make_shared<session>(std::move(socket), store_)->start();
     } else {
       std::cerr << "Accept error: " << error.message() << std::endl;
     }

@@ -9,3 +9,5 @@ build/
 .idea/
 
 *.log
+
+client/test_client.cpp

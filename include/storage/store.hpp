@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <mutex>
 #include <optional>
+#include <vector>
 
 namespace mini_redis
 {
@@ -31,10 +32,20 @@ namespace mini_redis
      * @brief Deletes a key.
      * 
      * @param key The key to delete.
+     * @return 1 if the key was deleted, 0 otherwise.
      */
-    void del(const std::string &key);
+    int del(const std::string &key);
+
+    /**
+     * @brief Gets keys matching a pattern.
+     * 
+     * @param pattern The pattern to match.
+     * @return A vector of matching keys.
+     */
+    std::vector<std::string> keys(const std::string &pattern = "*");
 
   private:
+  // 해시 맵을 사용하여 키-값을 저장
     std::unordered_map<std::string, std::string> data_;
     std::mutex mutex_;
   };

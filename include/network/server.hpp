@@ -5,6 +5,7 @@
 #include <memory>
 #include <vector>
 #include <thread>
+#include "storage/store.hpp"
 
 namespace mini_redis
 {
@@ -46,6 +47,7 @@ namespace mini_redis
     boost::asio::io_context io_context_;
     boost::asio::ip::tcp::acceptor acceptor_;
     std::vector<std::thread> thread_pool_;
+    std::shared_ptr<store> store_;
   };
 } // namespace mini_redis
 
