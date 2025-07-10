@@ -3,7 +3,7 @@
 ![Last Commit](https://img.shields.io/github/last-commit/DongInSong/mini-redis)
 ## 1. Overview
 C++와 Boost.Asio를 사용하여 Redis의 핵심 기능(GET, SET, PUB/SUB, TTL 등)을 구현하는 학습용 프로젝트입니다.   
-A learning-oriented project that implements core Redis features (GET, SET, PUB/SUB, TTL, etc.) using C++ and Boost.Asio.
+A learning-oriented project that implements core Redis features (GET, SET, DEL, PUB/SUB, TTL, etc.) using C++ and Boost.Asio.
 
 ## 2. Tech Stack
 
@@ -73,7 +73,7 @@ A learning-oriented project that implements core Redis features (GET, SET, PUB/S
     ./Debug/client.exe
     ```
 
-## Project Progress  ![progress](https://img.shields.io/badge/Progress-40%25-yellowgreen)
+## Project Progress  ![progress](https://img.shields.io/badge/Progress-70%25-yellowgreen)
 
 ### Milestone 1: TCP Server and PING Command
 
@@ -85,9 +85,11 @@ A learning-oriented project that implements core Redis features (GET, SET, PUB/S
 
 ### Milestone 2: Basic Data Operations
 
--   [ ] **`SET` Command**: Add support for storing values by key.
--   [ ] **`GET` Command**: Add support for retrieving stored values using keys.
--   [ ] **In-memory Data Store**: Implement an internal store to manage key-value data.
+-   [x] **`SET` Command**: Add support for storing values by key.
+-   [x] **`GET` Command**: Add support for retrieving stored values using keys.
+-   [x] **`DEL` Command**: Implement key deletion. Returns the number of keys that were removed.
+-   [x] **`KEYS` Command**: Implement key searching with glob-style patterns (e.g., `KEYS *`, `KEYS user:*`).
+-   [x] **In-memory Data Store**: Implement an internal store to manage key-value data.
 -   [ ] **`PUB/SUB` Commands**: Implement publish/subscribe messaging functionality.
 -   [ ] **TTL (Time To Live)**: Implement expiration for keys.
 
