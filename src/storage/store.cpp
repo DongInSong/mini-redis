@@ -4,21 +4,12 @@ namespace mini_redis
 {
   void store::set(const std::string &key, const std::string &value)
   {
-    // TODO: Implement set logic
-    // 1. Lock the mutex.
-    // 2. Insert or update the key-value pair in the map.
-    // 3. Unlock the mutex.
     std::lock_guard<std::mutex> lock(mutex_);
     data_[key] = value;
   }
 
   std::optional<std::string> store::get(const std::string &key)
   {
-    // TODO: Implement get logic
-    // 1. Lock the mutex.
-    // 2. Find the key in the map.
-    // 3. If found, return the value. Otherwise, return std::nullopt.
-    // 4. Unlock the mutex.
     std::lock_guard<std::mutex> lock(mutex_);
     auto it = data_.find(key);
     if (it != data_.end())
@@ -30,9 +21,28 @@ namespace mini_redis
 
   int store::del(const std::string &key)
   {
-    std::lock_guard<std::mutex> lock(mutex_);
-    return data_.erase(key);
+    return del(std::vector<std::string>{key});
   }
+
+  // 멀티 키 삭제
+  // 이 함수는 벡터로 전달된 여러 키를 삭제합니다.
+  // 각 키에 대해 data_ 맵에서 해당 키를 찾아 삭제하고, 삭제된 키의 개수를 반환합니다.
+  // 만약 키가 존재하지 않으면 삭제되지 않습니다.
+  // 이 함수는 멀티 스레드 환경에서 안전하게 동작하도록 mutex를 사용하여 동기화합니다.
+  int store::del(const std::vector<std::string> &keys)
+  {
+    std::lock_guard<std::mutex> lock(mutex_);
+    int deleted_count = 0;
+    for (const auto &key : keys)
+    {
+      if (data_.erase(key))
+      {
+        deleted_count++;
+      }
+    }
+    return deleted_count;
+  }
+
 
   // Wild card matching
   bool glob_match(const std::string &pattern, const std::string &text) {

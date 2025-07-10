@@ -31,6 +31,17 @@ TEST_F(StoreTest, DeleteNonExistent) {
     EXPECT_EQ(result, 0);
 }
 
+TEST_F(StoreTest, DeleteMultipleKeys) {
+    store_instance.set("key1", "value1");
+    store_instance.set("key2", "value2");
+    store_instance.set("key3", "value3");
+    int result = store_instance.del({"key1", "key3", "non_existent_key"});
+    EXPECT_EQ(result, 2);
+    EXPECT_FALSE(store_instance.get("key1").has_value());
+    EXPECT_TRUE(store_instance.get("key2").has_value());
+    EXPECT_FALSE(store_instance.get("key3").has_value());
+}
+
 TEST_F(StoreTest, KeysWildcardStar)
 {
     store_instance.set("user:123", "Alice");

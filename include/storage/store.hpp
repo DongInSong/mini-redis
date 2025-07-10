@@ -29,12 +29,20 @@ namespace mini_redis
     std::optional<std::string> get(const std::string &key);
 
     /**
-     * @brief Deletes a key.
-     * 
+     * @brief Deletes a single key.
+     *
      * @param key The key to delete.
      * @return 1 if the key was deleted, 0 otherwise.
      */
     int del(const std::string &key);
+
+    /**
+     * @brief Deletes one or more keys.
+     * 
+     * @param keys The keys to delete.
+     * @return The number of keys that were removed.
+     */
+    int del(const std::vector<std::string> &keys);
 
     /**
      * @brief Gets keys matching a pattern.

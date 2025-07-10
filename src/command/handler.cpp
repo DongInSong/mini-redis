@@ -87,12 +87,13 @@ namespace mini_redis
 
   std::string command_handler::handle_del(const command_t &cmd)
   {
-    if (cmd.size() != 2)
+    if (cmd.size() < 2)
     {
-      return "-ERR wrong number of arguments for 'del' command\r\n";
+      return parser::serialize_error("ERR wrong number of arguments for 'del' command");
     }
-    int deleted_count = store_->del(cmd[1]);
-    return ":" + std::to_string(deleted_count) + "\r\n";
+    std::vector<std::string> keys(cmd.begin() + 1, cmd.end());
+    int deleted_count = store_->del(keys);
+    return parser::serialize_integer(deleted_count);
   }
 
   std::string command_handler::handle_keys(const command_t &cmd)

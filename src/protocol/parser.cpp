@@ -98,4 +98,18 @@ namespace mini_redis
 
     return commands;
   }
+
+  // RESP 형식으로 직렬화
+  // 에러 메시지와 정수 값을 RESP 형식으로 직렬화합니다.
+  // 에러 메시지는 -로 시작하고, 정수는 :로 시작합니다.
+  // 각 메시지는 \r\n으로 끝납니다.
+  std::string parser::serialize_error(const std::string &message)
+  {
+    return "-" + message + "\r\n";
+  }
+
+  std::string parser::serialize_integer(int value)
+  {
+    return ":" + std::to_string(value) + "\r\n";
+  }
 } // namespace mini_redis

@@ -24,6 +24,23 @@ namespace mini_redis
   private:
     // Internal buffer for storing partial data.
     std::string buffer_;
+
+  public:
+    /**
+     * @brief Serializes an error message into a RESP string.
+     * 
+     * @param message The error message.
+     * @return The serialized error string.
+     */
+    static std::string serialize_error(const std::string &message);
+
+    /**
+     * @brief Serializes an integer into a RESP string.
+     * 
+     * @param value The integer value.
+     * @return The serialized integer string.
+     */
+    static std::string serialize_integer(int value);
   };
 } // namespace mini_redis
 
