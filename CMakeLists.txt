@@ -6,19 +6,19 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_TOOLCHAIN_FILE "C:/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "Vcpkg toolchain file")
 
-# Boost 라이브러리 찾기 (system 및 asio)
+# 라이브러리 찾기
 find_package(Boost REQUIRED COMPONENTS asio)
+find_package(GTest CONFIG REQUIRED)
 
 # 소스 파일 목록
 file(GLOB_RECURSE SOURCES "src/*.cpp")
+file(GLOB_RECURSE TEST_SOURCES
+    "tests/*.cpp"
+)
 
-# 실행 파일 생성
+# 서버 빌드
 add_executable(mini-redis_server ${SOURCES})
-
-# 헤더 파일 경로 추가 (modern cmake)
 target_include_directories(mini-redis_server PUBLIC include)
-
-# 라이브러리 링크
 target_link_libraries(mini-redis_server PRIVATE Boost::asio)
 
 # 테스트용 클라이언트 빌드
@@ -30,9 +30,14 @@ add_executable(test_client client/test_client.cpp)
 target_include_directories(test_client PUBLIC include)
 target_link_libraries(test_client PRIVATE Boost::asio)
 
-# 테스트 코드 빌드 (gtest 같은 프레임워크 추가 필요)
-# enable_testing()
-# file(GLOB_RECURSE TEST_SOURCES "tests/*.cpp")
-# add_executable(run_tests ${TEST_SOURCES})
-# target_link_libraries(run_tests gtest gtest_main)
-# add_test(NAME unit_tests COMMAND run_tests)
+
+# 테스트 코드 추가
+enable_testing()
+
+add_library(store_lib src/storage/store.cpp)
+target_include_directories(store_lib PUBLIC ${CMAKE_SOURCE_DIR}/include)
+add_executable(unit_tests ${TEST_SOURCES})
+target_include_directories(unit_tests PUBLIC include)
+target_link_libraries(unit_tests PRIVATE store_lib GTest::gtest GTest::gtest_main Boost::asio)
+
+add_test(NAME unit_tests COMMAND $<TARGET_FILE:unit_tests>)
