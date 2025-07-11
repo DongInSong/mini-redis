@@ -30,11 +30,11 @@ A learning-oriented project that implements core Redis features (GET, SET, DEL, 
 
 ### Milestone 3: Advanced Features
 -   [ ] **`PUB/SUB` Commands**: Implement publish/subscribe messaging functionality.
--   [ ] **TTL (Time To Live)**: Implement expiration for keys.
+-   [x] **TTL (Time To Live)**: Implement expiration for keys.
 
 ### Milestone 4: Integration with RSS-Redis Project
 -   [ ] Apply to [![GitHub](https://img.shields.io/badge/rss_redis-181717?style=flat&logo=github&logoColor=white)](https://github.com/DongInSong/rss-redis) and compare performance with existing Redis.
-
+-   [ ] Support for various data structures (List, Hash, Set, Sorted Set).
 
 ## 4. Build & Execution
 
