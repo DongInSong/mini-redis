@@ -1,11 +1,17 @@
 #include "command/handler.hpp"
+#include "network/session.hpp"
 #include "protocol/serializer.hpp"
 #include <algorithm> 
 #include <cctype> 
 
 namespace mini_redis
 {
-  command_handler::command_handler(std::shared_ptr<store> store) : store_(store) {}
+  command_handler::command_handler(std::shared_ptr<store> store, std::shared_ptr<pubsub_manager> pubsub_manager) 
+    : store_(store), pubsub_manager_(pubsub_manager) {}
+
+  void command_handler::set_session(std::weak_ptr<session> s) {
+    session_ = s;
+  }
 
   std::string command_handler::execute_command(const command_t &cmd)
   {
@@ -41,6 +47,18 @@ namespace mini_redis
     else if (command_name == "KEYS")
     {
       return handle_keys(cmd);
+    }
+    else if (command_name == "SUBSCRIBE")
+    {
+      return handle_subscribe(cmd);
+    }
+    else if (command_name == "UNSUBSCRIBE")
+    {
+      return handle_unsubscribe(cmd);
+    }
+    else if (command_name == "PUBLISH")
+    {
+      return handle_publish(cmd);
     }
     else
     {
@@ -134,16 +152,72 @@ namespace mini_redis
       }
       store_->setex(key, ttl_seconds, value);
     }
-    catch (const std::invalid_argument& ia)
+    catch (const std::invalid_argument&)
     {
       return serializer::serialize_error("ERR value is not an integer or out of range");
     }
-    catch (const std::out_of_range& oor)
+    catch (const std::out_of_range&)
     {
       return serializer::serialize_error("ERR value is not an integer or out of range");
     }
 
     return serializer::serialize_ok();
+  }
+
+  std::string command_handler::handle_subscribe(const command_t &cmd)
+  {
+    if (cmd.size() < 2) {
+      return serializer::serialize_error("ERR wrong number of arguments for 'subscribe' command");
+    }
+
+    if (auto s = session_.lock()) {
+      for (size_t i = 1; i < cmd.size(); ++i) {
+        const auto& channel = cmd[i];
+        s->subscribe_to_channel(channel);
+        s->send_pubsub_response("subscribe", channel, static_cast<int>(s->get_subscription_count()));
+      }
+    }
+
+    return ""; 
+  }
+
+  std::string command_handler::handle_unsubscribe(const command_t &cmd)
+  {
+    if (auto s = session_.lock()) {
+      if (cmd.size() == 1) {
+        // Unsubscribe from all channels
+        auto subscribed_channels = s->get_subscribed_channels();
+        if (subscribed_channels.empty()) {
+            // Not subscribed to any channels, but send a confirmation anyway
+            s->send_pubsub_response("unsubscribe", "", static_cast<int>(s->get_subscription_count()));
+        } else {
+            for (const auto& channel : subscribed_channels) {
+                s->unsubscribe_from_channel(channel);
+                s->send_pubsub_response("unsubscribe", channel, static_cast<int>(s->get_subscription_count()));
+            }
+        }
+      } else {
+        for (size_t i = 1; i < cmd.size(); ++i) {
+          const auto& channel = cmd[i];
+          s->unsubscribe_from_channel(channel);
+          s->send_pubsub_response("unsubscribe", channel, static_cast<int>(s->get_subscription_count()));
+        }
+      }
+    }
+    return "";
+  }
+
+  std::string command_handler::handle_publish(const command_t &cmd)
+  {
+    if (cmd.size() != 3) {
+      return serializer::serialize_error("ERR wrong number of arguments for 'publish' command");
+    }
+
+    const std::string& channel = cmd[1];
+    const std::string& message = cmd[2];
+
+    int receivers = pubsub_manager_->publish(channel, message);
+    return serializer::serialize_integer(receivers);
   }
 
 } // namespace mini_redis

@@ -6,6 +6,7 @@
 #include <vector>
 #include <thread>
 #include "storage/store.hpp"
+#include "pubsub/manager.hpp"
 
 namespace mini_redis
 {
@@ -48,6 +49,7 @@ namespace mini_redis
     boost::asio::ip::tcp::acceptor acceptor_;
     std::vector<std::thread> thread_pool_;
     std::shared_ptr<store> store_;
+    std::shared_ptr<pubsub_manager> pubsub_manager_;
   };
 } // namespace mini_redis
 

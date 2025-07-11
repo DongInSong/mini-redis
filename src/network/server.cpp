@@ -9,7 +9,8 @@ namespace mini_redis
 {
   server::server(short port)
       : acceptor_(io_context_, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port)),
-        store_(std::make_shared<store>())
+        store_(std::make_shared<store>()),
+        pubsub_manager_(std::make_shared<pubsub_manager>())
   {
     // 생성자 연결
     start_accept();
@@ -64,7 +65,7 @@ namespace mini_redis
     if (!error)
     {
       // 데이터 저장소를 생성하고 세션에 전달
-      std::make_shared<session>(std::move(socket), store_)->start();
+      std::make_shared<session>(std::move(socket), store_, pubsub_manager_)->start();
     }
     else
     {

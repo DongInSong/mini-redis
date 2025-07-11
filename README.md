@@ -29,7 +29,7 @@ A learning-oriented project that implements core Redis features (GET, SET, DEL, 
 -   [x] **In-memory Data Store**: Implement an internal store to manage key-value data.
 
 ### Milestone 3: Advanced Features
--   [ ] **`PUB/SUB` Commands**: Implement publish/subscribe messaging functionality.
+-   [x] **`PUB/SUB` Commands**: Implement publish/subscribe messaging functionality.
 -   [x] **TTL (Time To Live)**: Implement expiration for keys.
 
 ### Milestone 4: Integration with RSS-Redis Project

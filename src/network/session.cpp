@@ -1,30 +1,55 @@
 #include "network/session.hpp"
 #include "pubsub/manager.hpp"
 #include <iostream>
+#include "network/session.hpp"
+#include "protocol/serializer.hpp"
+#include <iostream>
+#include <vector>
 
 namespace mini_redis
 {
   session::session(boost::asio::ip::tcp::socket socket, std::shared_ptr<store> s, std::shared_ptr<pubsub_manager> ps_manager)
-      : socket_(std::move(socket)),
-        handler_(s),
-        pubsub_manager_(ps_manager)
+      : socket_(std::move(socket)), handler_(s, ps_manager), pubsub_manager_(ps_manager)
   {
   }
 
   session::~session()
   {
     // When a session is destroyed, unsubscribe it from all channels.
-    pubsub_manager_->unsubscribe_all(shared_from_this());
+    pubsub_manager_->unsubscribe_all(this);
   }
 
   void session::start()
   {
+    handler_.set_session(shared_from_this());
     do_read();
   }
 
   void session::deliver(const std::string &msg)
   {
     do_write(msg);
+  }
+
+  void session::subscribe_to_channel(const std::string& channel)
+  {
+    pubsub_manager_->subscribe(channel, shared_from_this());
+    subscribed_channels_.insert(channel);
+  }
+
+  void session::unsubscribe_from_channel(const std::string& channel)
+  {
+    pubsub_manager_->unsubscribe(channel, this);
+    subscribed_channels_.erase(channel);
+  }
+
+  size_t session::get_subscription_count() const
+  {
+    return subscribed_channels_.size();
+  }
+
+  std::set<std::string> session::get_subscribed_channels() const
+  {
+    return subscribed_channels_;
   }
 
   void session::do_read()
@@ -45,13 +70,17 @@ namespace mini_redis
           auto commands = parser_.parse(data);
           for (const auto &cmd : commands)
           {
-            // TODO: This part needs to be updated to handle pub/sub commands.
-            // For example, if the client is in a subscribed state, it should not process other commands.
-            // The command handler also needs to be aware of the session to call pubsub_manager.
+            std::string upper_cmd = cmd[0];
+            std::transform(upper_cmd.begin(), upper_cmd.end(), upper_cmd.begin(), ::toupper);
+
+            if (is_subscribed() && (upper_cmd != "SUBSCRIBE" && upper_cmd != "UNSUBSCRIBE" && upper_cmd != "PING")) {
+                do_write(serializer::serialize_error("ERR only 'SUBSCRIBE', 'UNSUBSCRIBE', and 'PING' are allowed in this context"));
+                continue;
+            }
             std::string result = handler_.execute_command(cmd);
-            std::cout << "Command executed: " << cmd[0] << std::endl;
-            std::cout << "Response: " << result << std::endl;
-            do_write(result);
+            if (!result.empty()) {
+              do_write(result);
+            }
           }
           // 읽기
           do_read();
@@ -62,5 +91,47 @@ namespace mini_redis
         }
         // On error or EOF, the session object will be destroyed, and the destructor will handle cleanup.
       });
+  }
+
+  void session::do_write(const std::string& response)
+  {
+    write_queue_.push_back(response);
+    if (!writing_in_progress_) {
+      do_queued_write();
+    }
+  }
+
+  void session::do_queued_write()
+  {
+    if (write_queue_.empty()) {
+      writing_in_progress_ = false;
+      return;
+    }
+
+    writing_in_progress_ = true;
+    auto self = shared_from_this();
+    boost::asio::async_write(socket_, boost::asio::buffer(write_queue_.front()),
+      [this, self](const boost::system::error_code &ec, std::size_t) {
+        if (!ec) {
+          write_queue_.pop_front();
+          do_queued_write();
+        } else {
+          std::cerr << "Write error: " << ec.message() << std::endl;
+          writing_in_progress_ = false;
+        }
+      });
+  }
+
+  void session::send_pubsub_response(const std::string &type, const std::string &channel, std::optional<int> subscription_count)
+  {
+    std::vector<std::string> response_parts;
+    response_parts.push_back(type);
+    response_parts.push_back(channel);
+    if (subscription_count.has_value()) {
+      response_parts.push_back(std::to_string(subscription_count.value()));
+    }
+
+    std::string serialized_response = serializer::serialize_array(response_parts);
+    deliver(serialized_response);
   }
 }
