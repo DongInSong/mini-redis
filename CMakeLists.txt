@@ -16,7 +16,7 @@ file(GLOB_RECURSE SOURCES
     "src/protocol/serializer.cpp"
 )
 file(GLOB_RECURSE TEST_SOURCES
-    "tests/*.cpp"
+    "tests/*_test.cpp"
 )
 
 # 서버 빌드
