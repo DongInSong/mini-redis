@@ -13,7 +13,6 @@ find_package(GTest CONFIG REQUIRED)
 # 소스 파일 목록
 file(GLOB_RECURSE SOURCES 
     "src/*.cpp"
-    "src/protocol/serializer.cpp"
 )
 file(GLOB_RECURSE TEST_SOURCES
     "tests/*_test.cpp"
