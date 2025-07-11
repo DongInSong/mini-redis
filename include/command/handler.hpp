@@ -33,6 +33,7 @@ namespace mini_redis
     std::string handle_ping(const command_t &cmd);
     std::string handle_get(const command_t &cmd);
     std::string handle_set(const command_t &cmd);
+    std::string handle_setex(const command_t &cmd);
     std::string handle_del(const command_t &cmd);
     std::string handle_keys(const command_t &cmd);
   };

@@ -1,4 +1,5 @@
 #include "command/handler.hpp"
+#include "protocol/serializer.hpp"
 #include <algorithm> 
 #include <cctype> 
 
@@ -11,7 +12,7 @@ namespace mini_redis
     if (cmd.empty())
     {
       // return "-ERR wrong number of arguments for 'empty' command\r\n";
-      return parser::serialize_error("ERR wrong number of arguments for 'empty' command");
+      return serializer::serialize_error("ERR wrong number of arguments for 'empty' command");
     }
 
     std::string command_name = cmd[0];
@@ -29,6 +30,10 @@ namespace mini_redis
     {
       return handle_set(cmd);
     }
+    else if (command_name == "SETEX")
+    {
+      return handle_setex(cmd);
+    }
     else if (command_name == "DEL")
     {
       return handle_del(cmd);
@@ -39,7 +44,7 @@ namespace mini_redis
     }
     else
     {
-      return parser::serialize_error("ERR unknown command `" + cmd[0] + "`");
+      return serializer::serialize_error("ERR unknown command `" + cmd[0] + "`");
     }
   }
 
@@ -47,30 +52,30 @@ namespace mini_redis
   {
     if (cmd.size() > 2)
     {
-      return parser::serialize_error("ERR wrong number of arguments for 'ping' command");
+      return serializer::serialize_error("ERR wrong number of arguments for 'ping' command");
     }
     if (cmd.size() == 2)
     {
-      return parser::serialize_bulk_string(cmd[1]);
+      return serializer::serialize_bulk_string(cmd[1]);
     }
-    return parser::serialize_ok();
+    return serializer::serialize_ok();
   }
 
   std::string command_handler::handle_get(const command_t &cmd)
   {
     if (cmd.size() != 2)
     {
-      return parser::serialize_error("ERR wrong number of arguments for 'get' command");
+      return serializer::serialize_error("ERR wrong number of arguments for 'get' command");
     }
     const std::string &key = cmd[1];
     std::optional<std::string> value = store_->get(key);
     if (value)
     {
-      return parser::serialize_bulk_string(value);
+      return serializer::serialize_bulk_string(value);
     }
     else
     {
-      return parser::serizlize_null_bulk_string();
+      return serializer::serialize_null_bulk_string();
     }
   }
 
@@ -78,36 +83,67 @@ namespace mini_redis
   {
     if (cmd.size() != 3)
     {
-      return parser::serialize_error("ERR wrong number of arguments for 'set' command");
+      return serializer::serialize_error("ERR wrong number of arguments for 'set' command");
     }
     const std::string &key = cmd[1];
     const std::string &value = cmd[2];
     store_->set(key, value);
-    return parser::serialize_ok();
+    return serializer::serialize_ok();
   }
 
   std::string command_handler::handle_del(const command_t &cmd)
   {
     if (cmd.size() < 2)
     {
-      return parser::serialize_error("ERR wrong number of arguments for 'del' command");
+      return serializer::serialize_error("ERR wrong number of arguments for 'del' command");
     }
     std::vector<std::string> keys(cmd.begin() + 1, cmd.end());
     int deleted_count = store_->del(keys);
-    return parser::serialize_integer(deleted_count);
+    return serializer::serialize_integer(deleted_count);
   }
 
   std::string command_handler::handle_keys(const command_t &cmd)
   {
     if (cmd.size() != 2)
     {
-      return parser::serialize_error("ERR wrong number of arguments for 'keys' command");
+      return serializer::serialize_error("ERR wrong number of arguments for 'keys' command");
     }
 
     const std::string &pattern = cmd[1];
     std::vector<std::string> matched_keys = store_->keys(pattern);
 
-    return parser::serialize_array(matched_keys);
+    return serializer::serialize_array(matched_keys);
+  }
+
+  std::string command_handler::handle_setex(const command_t &cmd)
+  {
+    if (cmd.size() != 4)
+    {
+      return serializer::serialize_error("ERR wrong number of arguments for 'setex' command");
+    }
+
+    const std::string &key = cmd[1];
+    const std::string &ttl_str = cmd[2];
+    const std::string &value = cmd[3];
+    
+    try
+    {
+      int ttl_seconds = std::stoi(ttl_str);
+      if (ttl_seconds <= 0) {
+        return serializer::serialize_error("ERR invalid expire time in setex");
+      }
+      store_->setex(key, ttl_seconds, value);
+    }
+    catch (const std::invalid_argument& ia)
+    {
+      return serializer::serialize_error("ERR value is not an integer or out of range");
+    }
+    catch (const std::out_of_range& oor)
+    {
+      return serializer::serialize_error("ERR value is not an integer or out of range");
+    }
+
+    return serializer::serialize_ok();
   }
 
 } // namespace mini_redis
