@@ -65,9 +65,11 @@
        curl -X DELETE "http://127.0.0.1:8000/rss/cache"
        ```
 -   **서버, 클라이언트 실행 mini-redis-server and rss-redis**
+    > ![mini_and_rss](./images/mini-reids_and_rss-redis.png)
 
 -   **/rss/search?q=ai**
-
+    > ![search_ai](./images/search_ai.png)
+    > ![search_ai_curl](./images/search_ai_curl.png)
 
 
 
