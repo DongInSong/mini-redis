@@ -1,6 +1,9 @@
 # Mini-Redis
 ![License](https://img.shields.io/github/license/senli1073/senli1073.github.io)
 ![Last Commit](https://img.shields.io/github/last-commit/DongInSong/mini-redis)
+## Project Report
+> **[Full Project Report](./docs/00_README.md)**
+
 ## 1. Overview
 C++와 Boost.Asio를 사용하여 Redis의 핵심 기능(GET, SET, PUB/SUB, TTL 등)을 구현하는 학습용 프로젝트입니다.   
 A learning-oriented project that implements core Redis features (GET, SET, DEL, PUB/SUB, TTL, etc.) using C++ and Boost.Asio.
@@ -108,4 +111,3 @@ A learning-oriented project that implements core Redis features (GET, SET, DEL, 
 -   [ ] Support for various data structures (List, Hash, Set, Sorted Set).
 -   [ ] Implement advanced logging system (e.g., spdlog).
 -   [ ] Implement persistence (RDB or AOF).
-
