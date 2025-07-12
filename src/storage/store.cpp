@@ -204,4 +204,46 @@ namespace mini_redis
     return remaining.count();
   }
 
+  long long store::incrby(const std::string &key, long long increment) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    auto it = data_.find(key);
+
+    if (it != data_.end() && is_key_expired(it->second)) {
+        data_.erase(it);
+        it = data_.end();
+    }
+
+    if (it == data_.end()) {
+        data_[key] = {RedisString(std::to_string(increment)), std::nullopt};
+        return increment;
+    }
+
+    if (auto val_ptr = std::get_if<RedisString>(&it->second.value)) {
+        try {
+            long long value = std::stoll(*val_ptr);
+            value += increment;
+            *val_ptr = std::to_string(value);
+            return value;
+        } catch (const std::invalid_argument&) {
+            throw std::runtime_error("ERR value is not an integer or out of range");
+        } catch (const std::out_of_range&) {
+            throw std::runtime_error("ERR value is not an integer or out of range");
+        }
+    } else {
+        throw std::runtime_error("ERR wrong type of value");
+    }
+  }
+
+  long long store::decrby(const std::string &key, long long decrement) {
+    return incrby(key, -decrement);
+  }
+
+  long long store::incr(const std::string &key) {
+    return incrby(key, 1);
+  }
+
+  long long store::decr(const std::string &key) {
+    return incrby(key, -1);
+  }
+
 } // namespace mini_redis

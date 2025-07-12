@@ -43,6 +43,10 @@ namespace mini_redis
     void set(const std::string &key, const std::string &value);
     void setex(const std::string &key, int ttl_seconds, const std::string &value);
     std::optional<std::string> get(const std::string &key);
+    long long incr(const std::string &key);
+    long long decr(const std::string &key);
+    long long incrby(const std::string &key, long long increment);
+    long long decrby(const std::string &key, long long decrement);
     
     // Generic commands
     int del(const std::string &key);

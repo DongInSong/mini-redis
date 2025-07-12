@@ -50,10 +50,12 @@ namespace mini_redis
             return serializer::serialize_error("ERR wrong number of arguments for 'empty' command");
         }
 
-        std::string command_name = cmd[0];
-        std::transform(command_name.begin(), command_name.end(), command_name.begin(), ::toupper);
+    std::string command_name = cmd[0];
+ 
+    // 명령어 모두 대문자로 변환 get -> GET
+    std::transform(command_name.begin(), command_name.end(), command_name.begin(), ::toupper);
 
-        for (const auto& handler : handlers_) {
+    for (const auto& handler : handlers_) {
             if (handler->supports(command_name)) {
                 return handler->execute(cmd);
             }
