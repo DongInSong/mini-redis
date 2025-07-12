@@ -21,7 +21,11 @@ namespace mini_redis
 
   void session::start()
   {
-    handler_.set_session(shared_from_this());
+    // weak ptr를 사용하여 세션을 핸들러에 설정
+    // This allows the handler to access the session without taking ownership.
+    // The session will be destroyed when the socket is closed or an error occurs.
+    // This prevents circular references and memory leaks.
+    handler_.set_session(weak_from_this());
     do_read();
   }
 

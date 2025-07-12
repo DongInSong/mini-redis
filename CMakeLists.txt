@@ -1,10 +1,19 @@
 cmake_minimum_required(VERSION 3.10)
 
 project(mini-redis CXX)
+
+if(DEFINED CMAKE_TOOLCHAIN_FILE)
+  include(${CMAKE_TOOLCHAIN_FILE})
+elseif(DEFINED ENV{VCPKG_ROOT})
+  set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake")
+  include(${CMAKE_TOOLCHAIN_FILE})
+else()
+  message(FATAL_ERROR "vcpkg toolchain file not found. Please set CMAKE_TOOLCHAIN_FILE or VCPKG_ROOT environment variable.")
+endif()
+
 cmake_policy(SET CMP0167 NEW)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_TOOLCHAIN_FILE "C:/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "Vcpkg toolchain file")
 
 # 라이브러리 찾기
 find_package(Boost REQUIRED COMPONENTS asio)

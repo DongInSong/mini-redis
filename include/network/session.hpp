@@ -7,7 +7,7 @@
 #include <deque>
 #include <optional>
 #include "protocol/parser.hpp"
-#include "command/handler.hpp"
+#include "command/dispatcher.hpp"
 #include "storage/store.hpp"
 
 namespace mini_redis
@@ -40,7 +40,7 @@ namespace mini_redis
     boost::asio::ip::tcp::socket socket_;
     boost::asio::streambuf read_buffer_;
     parser parser_;
-    command_handler handler_;
+    CommandDispatcher handler_;
     std::shared_ptr<pubsub_manager> pubsub_manager_;
     
     // Pub/Sub state
