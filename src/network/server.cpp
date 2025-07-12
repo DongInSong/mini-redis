@@ -62,6 +62,7 @@ namespace mini_redis
 
   void server::handle_accept(boost::asio::ip::tcp::socket &&socket, const boost::system::error_code &error)
   {
+    std::cout << "Attempting to handle a new connection." << std::endl;
     if (!error)
     {
       std::cout << "New connection from: " 

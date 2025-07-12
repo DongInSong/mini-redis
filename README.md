@@ -13,7 +13,35 @@ A learning-oriented project that implements core Redis features (GET, SET, DEL, 
 ![C++](https://img.shields.io/badge/C++-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white)  ![Boost](https://img.shields.io/badge/Boost-00599C?style=for-the-badge&logoColor=white)
 
 
-## 3. Project Progress  ![progress](https://img.shields.io/badge/Progress-100%25-green)
+## 3. Project Structure
+
+```
+.
+├── client/               # Source code for the test client
+├── docs/                 # Project-related documentation
+├── include/              # Header files
+│   ├── command/          # Classes for handling commands (e.g., PING, GET, SET)
+│   ├── config/           # Manages server configuration (from config.yaml)
+│   ├── network/          # Asynchronous network communication (TCP server, sessions)
+│   ├── protocol/         # RESP (Redis Serialization Protocol) parser and serializer
+│   ├── pubsub/           # Manages Publish/Subscribe functionality
+│   └── storage/          # In-memory Key-Value data store
+├── src/                  # Source files (implementation)
+│   ├── command/
+│   ├── config/
+│   ├── network/
+│   ├── protocol/
+│   ├── pubsub/
+│   ├── storage/
+│   └── main.cpp          # Server application entry point
+├── tests/                # Unit tests using GTest
+├── .gitignore
+├── CMakeLists.txt        # CMake build script
+├── config.yaml           # Server host and port configuration file
+└── README.md
+```
+
+## 4. Project Progress  ![progress](https://img.shields.io/badge/Progress-100%25-green)
 
 ### Milestone 1: TCP Server and PING Command
 
@@ -38,7 +66,7 @@ A learning-oriented project that implements core Redis features (GET, SET, DEL, 
 ### Milestone 4: Integration with RSS-Redis Project
 -   [x] Apply to [![GitHub](https://img.shields.io/badge/rss_redis-181717?style=flat&logo=github&logoColor=white)](https://github.com/DongInSong/rss-redis) and compare performance with existing Redis.
 
-## 4. Build & Execution
+## 5. Build & Execution
 
 ### Requirements
 - C++17 compatible compiler (MSVC, GCC, Clang)
@@ -107,7 +135,7 @@ A learning-oriented project that implements core Redis features (GET, SET, DEL, 
     ./Debug/client
     ```
     
-## 5. Future Plans
+## 6. Future Plans
 -   [ ] Support for various data structures (List, Hash, Set, Sorted Set).
 -   [ ] Implement advanced logging system (e.g., spdlog).
 -   [ ] Implement persistence (RDB or AOF).
