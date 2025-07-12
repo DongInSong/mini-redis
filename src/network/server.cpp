@@ -64,6 +64,9 @@ namespace mini_redis
   {
     if (!error)
     {
+      std::cout << "New connection from: " 
+                << socket.remote_endpoint().address().to_string()
+                << ":" << socket.remote_endpoint().port() << std::endl;
       // 데이터 저장소를 생성하고 세션에 전달
       std::make_shared<session>(std::move(socket), store_, pubsub_manager_)->start();
     }
