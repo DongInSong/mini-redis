@@ -10,7 +10,7 @@ A learning-oriented project that implements core Redis features (GET, SET, DEL, 
 ![C++](https://img.shields.io/badge/C++-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white)  ![Boost](https://img.shields.io/badge/Boost-00599C?style=for-the-badge&logoColor=white)
 
 
-## 3. Project Progress  ![progress](https://img.shields.io/badge/Progress-70%25-yellowgreen)
+## 3. Project Progress  ![progress](https://img.shields.io/badge/Progress-100%25-green)
 
 ### Milestone 1: TCP Server and PING Command
 
@@ -22,80 +22,90 @@ A learning-oriented project that implements core Redis features (GET, SET, DEL, 
 
 ### Milestone 2: Basic Data Operations
 
+-   [x] **In-memory Data Store**: Implement an internal store to manage key-value data.
 -   [x] **`SET` Command**: Implement storing a value for a specified key.
 -   [x] **`GET` Command**: Implement retrieving the value of a specified key.
 -   [x] **`DEL` Command**: Implement key deletion. Returns the number of keys that were removed.
 -   [x] **`KEYS` Command**: Implement key searching with glob-style patterns (e.g., `KEYS *`, `KEYS user:*`).
--   [x] **In-memory Data Store**: Implement an internal store to manage key-value data.
 
 ### Milestone 3: Advanced Features
 -   [x] **`PUB/SUB` Commands**: Implement publish/subscribe messaging functionality.
 -   [x] **TTL (Time To Live)**: Implement expiration for keys.
 
 ### Milestone 4: Integration with RSS-Redis Project
--   [ ] Apply to [![GitHub](https://img.shields.io/badge/rss_redis-181717?style=flat&logo=github&logoColor=white)](https://github.com/DongInSong/rss-redis) and compare performance with existing Redis.
--   [ ] Support for various data structures (List, Hash, Set, Sorted Set).
+-   [x] Apply to [![GitHub](https://img.shields.io/badge/rss_redis-181717?style=flat&logo=github&logoColor=white)](https://github.com/DongInSong/rss-redis) and compare performance with existing Redis.
 
 ## 4. Build & Execution
 
 ### Requirements
-- A C++17-compatible compiler (MSVC, GCC, Clang, etc.)
-- CMake (version 3.10 or higher)
+- C++17 compatible compiler (MSVC, GCC, Clang)
+- CMake (3.10 or higher)
 - vcpkg package manager
 
 ### Build Steps
 
-1. **Install Boost via vcpkg**
+1. **Install Dependencies with vcpkg**
+   The project requires `boost`, `gtest` (for tests), and `yaml-cpp`.
     ```bash
-    # Windows
-    vcpkg install boost:x64-windows
-    
-    # Linux
-    ./vcpkg install boost
-    
-    # macOS
-    xcode-select --install
+    # From your vcpkg directory
+    # For Windows
+    ./vcpkg install boost:x64-windows gtest:x64-windows yaml-cpp:x64-windows
+
+    # For Linux / macOS
+    ./vcpkg install boost gtest yaml-cpp
     ```
 
-2. **Clone the repository and create a build directory**
+2. **Clone the Repository**
     ```bash
     git clone https://github.com/DongInSong/mini-redis.git
     cd mini-redis
+    ```
+
+3. **Configure the Build with CMake**
+   Create a build directory and run CMake. The project will automatically find the vcpkg toolchain if you have the `VCPKG_ROOT` environment variable set.
+    ```bash
     mkdir build
     cd build
-    ```
-
-3. **Generate build files**
-    ```bash
     cmake ..
     ```
-    Or specify a build tool and the `vcpkg.cmake` toolchain file:
+   If you do not have the `VCPKG_ROOT` environment variable set, you must specify the path to the toolchain file manually:
     ```bash
-    # Windows
-    cmake .. -G "Visual Studio 17 2022" -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake
-
-    # Linux
-    cmake .. -DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake
-
-    # macOS
-    cmake .. -DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake
+    # Replace <path-to-vcpkg> with the actual path to your vcpkg installation
+    cmake .. -DCMAKE_TOOLCHAIN_FILE=<path-to-vcpkg>/scripts/buildsystems/vcpkg.cmake
     ```
 
-4. **Build the project**
+4. **Build the Project**
     ```bash
     cmake --build .
     ```
-    Executables `mini-redis_server.exe` and `client.exe` will be generated in the `build/Debug` directory.
-
+    Executables will be generated in the `build/Debug` (or `build/Release`) directory.
 
 ### Run
 
-1. **Start the server**
-    ```bash
-    ./Debug/mini-redis_server.exe
+1. **(Optional) Modify Configuration**
+   Edit `config.yaml` in the project root to change the server's host or port.
+    ```yaml
+    server:
+      host: 0.0.0.0
+      port: 6379
     ```
 
-2. **Start the client**
+2. **Start the Server**
+   The server executable must be run from the project root directory to find `config.yaml`.
     ```bash
-    ./Debug/client.exe
+    # From the 'build' directory
+    ./Debug/mini-redis_server
     ```
+
+3. **Start the Client**
+   Open a new terminal to connect to the server.
+    ```bash
+    # From the 'build' directory
+    ./Debug/client
+    ```
+    
+## 5. Future Plans
+-   [ ] Support for various data structures (List, Hash, Set, Sorted Set).
+-   [ ] Implement advanced logging system (e.g., spdlog).
+-   [ ] Implement persistence (RDB or AOF).
+
