@@ -68,7 +68,7 @@
     > ![mini_and_rss](./images/mini-reids_and_rss-redis.png)
 
 -   **/rss/search?q=ai**
-    > ![search_ai](./images/search_ai.png)
+    > ![search_ai_fix](./images/search_ai.png)
     > ![search_ai_curl](./images/search_ai_curl.png)
 
 
