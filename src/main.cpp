@@ -1,4 +1,5 @@
 #include "network/server.hpp"
+#include "config/config.hpp"
 #include <iostream>
 
 /* MINI-REDIS SERVER 
@@ -44,8 +45,11 @@ int main()
 {
     try
     {
-        mini_redis::server s(6379);
-        std::cout << "Mini-Redis server started on port 6379" << std::endl;
+        mini_redis::Config config("config.yaml");
+        const auto host = config.get_host();
+        const short port = config.get_port();
+        mini_redis::server s(host, port);
+        std::cout << "Mini-Redis server started on " << host << ":" << port << std::endl;
         s.run();
     }
     catch (const std::exception &e)

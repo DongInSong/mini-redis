@@ -16,9 +16,10 @@ namespace mini_redis
     /**
      * @brief Construct a new server object
      * 
+     * @param host The host address to listen on
      * @param port The port to listen on
      */
-    server(short port);
+    server(const std::string& host, short port);
 
     /**
      * @brief Runs the server's I/O service loop.

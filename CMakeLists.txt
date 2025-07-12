@@ -18,26 +18,24 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # 라이브러리 찾기
 find_package(Boost REQUIRED COMPONENTS asio)
 find_package(GTest CONFIG REQUIRED)
+find_package(yaml-cpp CONFIG REQUIRED)
 
 # 소스 파일 목록
-file(GLOB_RECURSE SOURCES 
-    "src/*.cpp"
-)
+file(GLOB_RECURSE ALL_SOURCES "src/**/*.cpp")
+file(GLOB_RECURSE MAIN_SOURCE "src/main.cpp")
+list(REMOVE_ITEM ALL_SOURCES ${MAIN_SOURCE})
+
+set(SOURCES ${MAIN_SOURCE} ${ALL_SOURCES})
+set(TEST_LIB ${ALL_SOURCES})
+
 file(GLOB_RECURSE TEST_SOURCES
     "tests/*_test.cpp"
-)
-file(GLOB_RECURSE TEST_LIB
-    "src/command/*.cpp"
-    "src/network/*.cpp"
-    "src/protocol/*.cpp"
-    "src/pubsub/*.cpp"
-    "src/storage/*.cpp"
 )
 
 # 서버 빌드
 add_executable(mini-redis_server ${SOURCES})
 target_include_directories(mini-redis_server PUBLIC include)
-target_link_libraries(mini-redis_server PRIVATE Boost::asio)
+target_link_libraries(mini-redis_server PRIVATE Boost::asio yaml-cpp::yaml-cpp)
 
 # 테스트용 클라이언트 빌드
 add_executable(client client/client.cpp)

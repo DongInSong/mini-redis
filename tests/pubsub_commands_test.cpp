@@ -15,7 +15,7 @@ protected:
 
     void SetUp() override {
         try {
-            srv = std::make_unique<mini_redis::server>(port);
+            srv = std::make_unique<mini_redis::server>("127.0.0.1", port);
             srv_thread = std::thread([this]() {
                 srv->run();
             });

@@ -7,8 +7,8 @@
 
 namespace mini_redis
 {
-  server::server(short port)
-      : acceptor_(io_context_, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port)),
+  server::server(const std::string& host, short port)
+      : acceptor_(io_context_, boost::asio::ip::tcp::endpoint(boost::asio::ip::make_address(host), port)),
         store_(std::make_shared<store>()),
         pubsub_manager_(std::make_shared<pubsub_manager>())
   {
