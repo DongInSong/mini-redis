@@ -61,8 +61,8 @@ A learning-oriented project that implements core Redis features (GET, SET, DEL, 
     cd mini-redis
     ```
 
-3. **Configure the Build with CMake**
-   Create a build directory and run CMake. The project will automatically find the vcpkg toolchain if you have the `VCPKG_ROOT` environment variable set.
+3. **Configure the Build with CMake**   
+   The project will automatically find the vcpkg toolchain if you have the `VCPKG_ROOT` environment variable set.
     ```bash
     mkdir build
     cd build
