@@ -1,5 +1,5 @@
 # Mini-Redis
-![License](https://img.shields.io/github/license/senli1073/senli1073.github.io)
+![License](https://img.shields.io/github/license/DongInSong/mini-redis)
 ![Last Commit](https://img.shields.io/github/last-commit/DongInSong/mini-redis)
 ## Project Report (한국어)
 > **[Full Project Report](./docs/00_README.md)**
